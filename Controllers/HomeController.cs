@@ -84,21 +84,31 @@ namespace ChefsAndDishes.Controllers
         public IActionResult NewDishView()
         {
             List<Chef> allChef = dbContext.Chefs.ToList();
-            ViewBag.allChefs = allChef;
-            return View("NewDish");
+            NewDishModel newdish =  new NewDishModel();
+            newdish.allchefs = allChef;
+            return View("NewDish",newdish);
         }
 
         [Route("NewDish")]
         [HttpPost]
-        public IActionResult NewDish(Dish newDish)
+        public IActionResult NewDish(NewDishModel newDishmodel)
         {
             if (!ModelState.IsValid)
             {
-                return View("NewDish");
+                List<Chef> allChef = dbContext.Chefs.ToList();
+                NewDishModel newdish = new NewDishModel();
+                newdish.allchefs = allChef;
+                return View("NewDish", newdish);
             }
             else
             {
-                        dbContext.Dishes.Add(newDish);
+                        Dish newdish = new Dish();
+                        newdish.DishName = newDishmodel.DishName;
+                        newdish.ChefId = newDishmodel.ChefId;
+                        newdish.Description = newDishmodel.Description;
+                        newdish.Calories = newDishmodel.Calories;
+                        newdish.Tastiness = newDishmodel.Tastiness;
+                        dbContext.Dishes.Add(newdish);
                         dbContext.SaveChanges();
                         return Redirect("dishes");
             }
